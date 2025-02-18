@@ -1,4 +1,4 @@
-const API_KEY = 'YOUR_TMDB_API_KEY'; // Replace this with your TMDB API key
+const API_KEY = 'a9d2bf9eb920e7d3004d6a8a43a06596';
 
 async function search() {
     const query = document.getElementById('searchInput').value;
