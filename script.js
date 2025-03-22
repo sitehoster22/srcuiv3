@@ -1,42 +1,124 @@
-const API_KEY = 'a9d2bf9eb920e7d3004d6a8a43a06596';
+const TMDB_API_KEY = 'a9d2bf9eb920e7d3004d6a8a43a06596'; // Replace with your TMDB API key
 
-async function search() {
+document.getElementById('searchForm').addEventListener('submit', function(e) {
+    e.preventDefault();
     const query = document.getElementById('searchInput').value;
-    const resultsDiv = document.getElementById('results');
-    
-    if (!query) {
-        resultsDiv.innerHTML = '<p>Please enter a search query.</p>';
-        return;
+    if (query) searchMedia(query);
+});
+
+async function searchMedia(query) {
+    try {
+        const response = await fetch(
+            `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`
+        );
+        const data = await response.json();
+        displayResults(data.results);
+    } catch (error) {
+        console.error('Error:', error);
     }
+}
 
-    const response = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${API_KEY}&query=${query}`);
-    const data = await response.json();
+function displayResults(results) {
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = '';
 
-    if (data.results.length === 0) {
-        resultsDiv.innerHTML = '<p>No results found.</p>';
-        return;
-    }
+    results.forEach(item => {
+        if (item.media_type === 'movie' || item.media_type === 'tv') {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            card.innerHTML = `
+                <img src="${item.poster_path ? 
+                    `https://image.tmdb.org/t/p/w500${item.poster_path}` : 
+                    'https://via.placeholder.com/200x300?text=No+Image'}" 
+                    alt="${item.title || item.name}">
+                <div class="card-content">
+                    <h3>${item.title || item.name}</h3>
+                    <p>${item.overview || 'No description available'}</p>
+                    <button onclick="handlePlay(${item.id}, '${item.media_type}')">Play</button>
+                </div>
+            `;
 
-    resultsDiv.innerHTML = ''; // Clear previous results
-
-    data.results.forEach(item => {
-        const title = item.title || item.name;
-        const tmdb_id = item.id;
-        const type = item.media_type;
-
-        const resultDiv = document.createElement('div');
-        resultDiv.className = 'result-item';
-        resultDiv.
-        result
-innerHTML = `
-            <h3>${title}</h3>
-            <button onclick="play('${type}', ${tmdb_id})">Play</button>
-        `;
-        resultsDiv.appendChild(resultDiv);
+            resultsContainer.appendChild(card);
+        }
     });
 }
 
-function play(type, id) {
-    // Function to handle playing the selected movie or show
-    console.log(`Playing ${type} with ID ${id}`);
+function handlePlay(id, mediaType) {
+    document.getElementById('results').innerHTML = ''; // Clear search results
+    if (mediaType === 'movie') {
+        playMovie(id);
+    } else if (mediaType === 'tv') {
+        fetchSeasons(id);
+    }
+}
+
+function playMovie(tmdbId) {
+    const embedUrl = `https://vidsrc.su/embed/movie/${tmdbId}`;
+    document.getElementById('player').innerHTML = `
+        <iframe src="${embedUrl}" allowfullscreen></iframe>
+    `;
+}
+
+async function fetchSeasons(tmdbId) {
+    try {
+        const response = await fetch(
+            `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_API_KEY}`
+        );
+        const data = await response.json();
+        showSeasonForm(tmdbId, data.seasons);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function showSeasonForm(tmdbId, seasons) {
+    const seasonOptions = seasons.map(season => `
+        <option value="${season.season_number}">Season ${season.season_number}</option>
+    `).join('');
+
+    document.getElementById('player').innerHTML = `
+        <div class="season-form">
+            <h3>Select Season and Episode</h3>
+            <select id="seasonSelect">
+                ${seasonOptions}
+            </select>
+            <select id="episodeSelect">
+                <option value="1">Episode 1</option>
+            </select>
+            <button onclick="playTVShow(${tmdbId})">Play</button>
+        </div>
+    `;
+
+    document.getElementById('seasonSelect').addEventListener('change', function() {
+        updateEpisodes(tmdbId, this.value);
+    });
+}
+
+async function updateEpisodes(tmdbId, seasonNumber) {
+    try {
+        const response = await fetch(
+            `https://api.themoviedb.org/3/tv/${tmdbId}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`
+        );
+        const data = await response.json();
+        const episodeOptions = data.episodes.map(episode => `
+            <option value="${episode.episode_number}">Episode ${episode.episode_number}</option>
+        `).join('');
+
+        document.getElementById('episodeSelect').innerHTML = episodeOptions;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function playTVShow(tmdbId) {
+    const season = document.getElementById('seasonSelect').value;
+    const episode = document.getElementById('episodeSelect').value;
+    
+    if (season && episode) {
+        const embedUrl = `https://vidsrc.su/embed/tv/${tmdbId}/${season}/${episode}`;
+        document.getElementById('player').innerHTML = `
+            <iframe src="${embedUrl}" allowfullscreen></iframe>
+        `;
+    }
 }
