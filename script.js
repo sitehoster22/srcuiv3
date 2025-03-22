@@ -1,4 +1,8 @@
 const TMDB_API_KEY = 'a9d2bf9eb920e7d3004d6a8a43a06596'; // Replace with your TMDB API key
+let currentTmdbId = null;
+let currentSeason = null;
+let currentEpisode = null;
+let totalEpisodes = null;
 
 document.getElementById('searchForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -49,6 +53,7 @@ function handlePlay(id, mediaType) {
     if (mediaType === 'movie') {
         playMovie(id);
     } else if (mediaType === 'tv') {
+        currentTmdbId = id;
         fetchSeasons(id);
     }
 }
@@ -58,6 +63,7 @@ function playMovie(tmdbId) {
     document.getElementById('player').innerHTML = `
         <iframe src="${embedUrl}" allowfullscreen></iframe>
     `;
+    document.getElementById('nextEpisodeButton').style.display = 'none'; // Hide next episode button for movies
 }
 
 async function fetchSeasons(tmdbId) {
@@ -93,6 +99,9 @@ function showSeasonForm(tmdbId, seasons) {
     document.getElementById('seasonSelect').addEventListener('change', function() {
         updateEpisodes(tmdbId, this.value);
     });
+
+    // Initialize episodes for the first season
+    updateEpisodes(tmdbId, 1);
 }
 
 async function updateEpisodes(tmdbId, seasonNumber) {
@@ -116,9 +125,42 @@ function playTVShow(tmdbId) {
     const episode = document.getElementById('episodeSelect').value;
     
     if (season && episode) {
-        const embedUrl = `https://vidsrc.su/embed/tv/${tmdbId}/${season}/${episode}`;
-        document.getElementById('player').innerHTML = `
-            <iframe src="${embedUrl}" allowfullscreen></iframe>
-        `;
+        currentSeason = parseInt(season);
+        currentEpisode = parseInt(episode);
+        currentTmdbId = tmdbId;
+
+        // Fetch total episodes in the season
+        fetch(`https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${TMDB_API_KEY}`)
+            .then(response => response.json())
+            .then(data => {
+                totalEpisodes = data.episodes.length;
+                updatePlayer(tmdbId, season, episode);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+}
+
+function updatePlayer(tmdbId, season, episode) {
+    const embedUrl = `https://vidsrc.su/embed/tv/${tmdbId}/${season}/${episode}`;
+    document.getElementById('player').innerHTML = `
+        <iframe src="${embedUrl}" allowfullscreen></iframe>
+    `;
+
+    // Show the "Next Episode" button if there are more episodes
+    if (currentEpisode < totalEpisodes) {
+        document.getElementById('nextEpisodeButton').style.display = 'block';
+    } else {
+        document.getElementById('nextEpisodeButton').style.display = 'none';
+    }
+}
+
+function playNextEpisode() {
+    if (currentTmdbId && currentSeason && currentEpisode) {
+        currentEpisode += 1;
+        if (currentEpisode > totalEpisodes) {
+            alert('No more episodes in this season.');
+            return;
+        }
+        updatePlayer(currentTmdbId, currentSeason, currentEpisode);
     }
 }

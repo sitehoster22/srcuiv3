@@ -125,4 +125,18 @@ iframe {
     #searchInput {
         width: 70%;
     }
+#nextEpisodeButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    display: none; /* Hidden by default */
+}
+
+#nextEpisodeButton:hover {
+    background-color: #218838;
+}
 }
