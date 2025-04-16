@@ -141,7 +141,7 @@ function playTVShow(tmdbId) {
 }
 
 function updatePlayer(tmdbId, season, episode) {
-    const embedUrl = `https://vidsrc.su/embed/tv/${tmdbId}/${season}/${episode}`;
+    const embedUrl = `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}`;
     document.getElementById('player').innerHTML = `
         <iframe src="${embedUrl}" allowfullscreen></iframe>
     `;
