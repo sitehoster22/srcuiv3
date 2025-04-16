@@ -59,7 +59,7 @@ function handlePlay(id, mediaType) {
 }
 
 function playMovie(tmdbId) {
-    const embedUrl = `https://vidsrc.su/embed/movie/${tmdbId}`;
+    const embedUrl = `https://vidsrc.to/embed/movie/${tmdbId}`;
     document.getElementById('player').innerHTML = `
         <iframe src="${embedUrl}" allowfullscreen></iframe>
     `;
