@@ -141,7 +141,7 @@ function playTVShow(tmdbId) {
 }
 
 function updatePlayer(tmdbId, season, episode) {
-    const embedUrl = `http://87.106.101.66:6173/embed/tv/${tmdbId}/${season}/${episode}`;
+    const embedUrl = `87.106.101.66:6173/embed/tv/${tmdbId}/${season}/${episode}`;
     document.getElementById('player').innerHTML = `
         <iframe src="${embedUrl}" allowfullscreen></iframe>
     `;
