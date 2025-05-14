@@ -2,7 +2,7 @@ const request = require('request');
 
 export default (req, res) => {
     const targetUrl = req.query.url;
-    if (!targetUrl || !targetUrl.startsWith('https://vidsrc.su')) {
+    if (!targetUrl || !targetUrl.startsWith('https://vidsrc.cc')) {
         return res.status(400).send('Invalid target URL');
     }
 
