@@ -13,7 +13,7 @@ document.getElementById('searchForm').addEventListener('submit', function(e) {
 async function searchMedia(query) {
     try {
         const response = await fetch(
-            `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`
+            https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}
         );
         const data = await response.json();
         displayResults(data.results);
@@ -31,9 +31,9 @@ function displayResults(results) {
             const card = document.createElement('div');
             card.className = 'card';
             
-            card.innerHTML = `
+            card.innerHTML = 
                 <img src="${item.poster_path ? 
-                    `https://image.tmdb.org/t/p/w500${item.poster_path}` : 
+                    https://image.tmdb.org/t/p/w500${item.poster_path} : 
                     'https://via.placeholder.com/200x300?text=No+Image'}" 
                     alt="${item.title || item.name}">
                 <div class="card-content">
@@ -41,7 +41,7 @@ function displayResults(results) {
                     <p>${item.overview || 'No description available'}</p>
                     <button onclick="handlePlay(${item.id}, '${item.media_type}')">Play</button>
                 </div>
-            `;
+            ;
 
             resultsContainer.appendChild(card);
         }
@@ -59,17 +59,17 @@ function handlePlay(id, mediaType) {
 }
 
 function playMovie(tmdbId) {
-    const embedUrl = `https://vidsrc.su/embed/movie/${tmdbId}``;
-    document.getElementById('player').innerHTML = `
+    const embedUrl = https://vidsrc.su/embed/movie/${tmdbId};
+    document.getElementById('player').innerHTML = 
         <iframe src="${embedUrl}" allowfullscreen></iframe>
-    `;
+    ;
     document.getElementById('nextEpisodeButton').style.display = 'none'; // Hide next episode button for movies
 }
 
 async function fetchSeasons(tmdbId) {
     try {
         const response = await fetch(
-            `https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_API_KEY}`
+            https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_API_KEY}
         );
         const data = await response.json();
         showSeasonForm(tmdbId, data.seasons);
@@ -79,11 +79,11 @@ async function fetchSeasons(tmdbId) {
 }
 
 function showSeasonForm(tmdbId, seasons) {
-    const seasonOptions = seasons.map(season => `
+    const seasonOptions = seasons.map(season => 
         <option value="${season.season_number}">Season ${season.season_number}</option>
-    `).join('');
+    ).join('');
 
-    document.getElementById('player').innerHTML = `
+    document.getElementById('player').innerHTML = 
         <div class="season-form">
             <h3>Select Season and Episode</h3>
             <select id="seasonSelect">
@@ -94,7 +94,7 @@ function showSeasonForm(tmdbId, seasons) {
             </select>
             <button onclick="playTVShow(${tmdbId})">Play</button>
         </div>
-    `;
+    ;
 
     document.getElementById('seasonSelect').addEventListener('change', function() {
         updateEpisodes(tmdbId, this.value);
@@ -107,12 +107,12 @@ function showSeasonForm(tmdbId, seasons) {
 async function updateEpisodes(tmdbId, seasonNumber) {
     try {
         const response = await fetch(
-            `https://api.themoviedb.org/3/tv/${tmdbId}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`
+            https://api.themoviedb.org/3/tv/${tmdbId}/season/${seasonNumber}?api_key=${TMDB_API_KEY}
         );
         const data = await response.json();
-        const episodeOptions = data.episodes.map(episode => `
+        const episodeOptions = data.episodes.map(episode => 
             <option value="${episode.episode_number}">Episode ${episode.episode_number}</option>
-        `).join('');
+        ).join('');
 
         document.getElementById('episodeSelect').innerHTML = episodeOptions;
     } catch (error) {
@@ -130,7 +130,7 @@ function playTVShow(tmdbId) {
         currentTmdbId = tmdbId;
 
         // Fetch total episodes in the season
-        fetch(`https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${TMDB_API_KEY}`)
+        fetch(https://api.themoviedb.org/3/tv/${tmdbId}/season/${season}?api_key=${TMDB_API_KEY})
             .then(response => response.json())
             .then(data => {
                 totalEpisodes = data.episodes.length;
@@ -141,10 +141,10 @@ function playTVShow(tmdbId) {
 }
 
 function updatePlayer(tmdbId, season, episode) {
-    const embedUrl = ``https://vidsrc.su/embed/tv/${tmdbId}/${season}/${episode}`;
-    document.getElementById('player').innerHTML = `
+    const embedUrl = https://vidsrc.su/embed/tv/${tmdbId}/${season}/${episode};
+    document.getElementById('player').innerHTML = 
         <iframe src="${embedUrl}" allowfullscreen></iframe>
-    `;
+    ;
 
     // Show the "Next Episode" button if there are more episodes
     if (currentEpisode < totalEpisodes) {
