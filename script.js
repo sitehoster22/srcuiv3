@@ -59,7 +59,7 @@ function handlePlay(id, mediaType) {
 }
 
 function playMovie(tmdbId) {
-    const embedUrl = `https://movie.nightfallen.my/api/proxy?url=https://vidsrc.su/embed/movie/${tmdbId}`;
+    const embedUrl = `https://movie.nightfallen.my/api/proxy?url=vidsrc.su/embed/movie/${tmdbId}`;
     document.getElementById('player').innerHTML = `
         <iframe src="${embedUrl}" allowfullscreen></iframe>
     `;
@@ -141,7 +141,7 @@ function playTVShow(tmdbId) {
 }
 
 function updatePlayer(tmdbId, season, episode) {
-    const embedUrl = `https://movie.nightfallen.my/api/proxy?url=https://vidsrc.su/embed/tv/${tmdbId}/${season}/${episode}`;
+    const embedUrl = `https://movie.nightfallen.my/api/proxy?url=vidsrc.su/embed/tv/${tmdbId}/${season}/${episode}`;
     document.getElementById('player').innerHTML = `
         <iframe src="${embedUrl}" allowfullscreen></iframe>
     `;
