@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   if (!url) return res.status(400).send('Missing URL');
 
   try {
-    const proxyUrl = `http://87.106.101.66:6173/${url}`;
+    const proxyUrl = `http://87.106.101.66:6173${url}`;
     const response = await fetch(proxyUrl);
     const contentType = response.headers.get('content-type');
 
