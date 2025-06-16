@@ -1,4 +1,3 @@
-<script>
 const TMDB_API_KEY = 'a9d2bf9eb920e7d3004d6a8a43a06596'; // Replace with your TMDB API key
 let currentTmdbId = null;
 let currentSeason = null;
@@ -164,4 +163,3 @@ function playNextEpisode() {
         updatePlayer(currentTmdbId, currentSeason, currentEpisode);
     }
 }
-</script>
