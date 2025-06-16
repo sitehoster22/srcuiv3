@@ -1,3 +1,4 @@
+<script>
 const TMDB_API_KEY = 'a9d2bf9eb920e7d3004d6a8a43a06596'; // Replace with your TMDB API key
 let currentTmdbId = null;
 let currentSeason = null;
@@ -59,7 +60,7 @@ function handlePlay(id, mediaType) {
 }
 
 function playMovie(tmdbId) {
-    const embedUrl = `https://vidsrc.su/embed/movie/${tmdbId}`;
+    const embedUrl = `https://vidora.su/movie/${tmdbId}`;
     document.getElementById('player').innerHTML = `
         <iframe src="${embedUrl}" allowfullscreen></iframe>
     `;
@@ -141,12 +142,11 @@ function playTVShow(tmdbId) {
 }
 
 function updatePlayer(tmdbId, season, episode) {
-    const embedUrl = `https://vidsrc.su/embed/tv/${tmdbId}/${season}/${episode}`;
+    const embedUrl = `https://vidora.su/tv/${tmdbId}/${season}/${episode}`;
     document.getElementById('player').innerHTML = `
         <iframe src="${embedUrl}" allowfullscreen></iframe>
     `;
 
-    // Show the "Next Episode" button if there are more episodes
     if (currentEpisode < totalEpisodes) {
         document.getElementById('nextEpisodeButton').style.display = 'block';
     } else {
@@ -164,3 +164,4 @@ function playNextEpisode() {
         updatePlayer(currentTmdbId, currentSeason, currentEpisode);
     }
 }
+</script>
